@@ -81,11 +81,11 @@ The use of the Asymmetric Laplace (AL) distribution for quantile inference withi
 
 
 \subsection{Full State-Space Specification}
-\label{subsec:retrospective}
+\label{subsec:fullstatespace}
 
 We present the full model directly and then describe its components. For the estimation period \(1 \leq t \leq T\), let
 \[
-\boldsymbol{\mu}_t =
+\boldsymbol{\eta}_t =
 \begin{bmatrix}
 \boldsymbol{\theta}_t \\
 \boldsymbol{\delta}_t^1 \\
@@ -107,9 +107,9 @@ with \(\lambda\) governing persistence in the transfer state and \(\mathbf{x}_t\
 
 The USGS observations and the retrospective products are treated as source-specific views of the same latent quantile process:
 \begin{align}
-     \text{USGS observations}:&& y^o_t \mid \boldsymbol{\mu}_t, \sigma^o, \gamma^o &\sim \text{exAL}_{p_0}\!\left(\mathbf{h}_{t,0}' \boldsymbol{\mu}_t, \sigma^o, \gamma^o\right), \label{B5} \\
-    \text{Retrospective products}:&& z^j_t \mid \boldsymbol{\mu}_t, \sigma^j, \gamma^j &\sim \text{exAL}_{p_0}\!\left(\mathbf{h}_{t,j}' \boldsymbol{\mu}_t, \sigma^j, \gamma^j\right), \quad 1 \leq j \leq J, \label{B6} \\
-    \text{All states}:&& \boldsymbol{\mu}_t \mid \boldsymbol{\mu}_{t-1} &\sim \mathcal{N}\!\left(\boldsymbol{D}_t \boldsymbol{\mu}_{t-1}, \boldsymbol{\Lambda}_t\right). \label{B7}
+     \text{USGS observations}:&& y^o_t \mid \boldsymbol{\eta}_t, \sigma^o, \gamma^o &\sim \text{exAL}_{p_0}\!\left(\mathbf{h}_{t,0}' \boldsymbol{\eta}_t, \sigma^o, \gamma^o\right), \label{eq:usgsobs} \\
+    \text{Retrospective products}:&& z^j_t \mid \boldsymbol{\eta}_t, \sigma^j, \gamma^j &\sim \text{exAL}_{p_0}\!\left(\mathbf{h}_{t,j}' \boldsymbol{\eta}_t, \sigma^j, \gamma^j\right), \quad 1 \leq j \leq J, \label{eq:retroobs} \\
+    \text{All states}:&& \boldsymbol{\eta}_t \mid \boldsymbol{\eta}_{t-1} &\sim \mathcal{N}\!\left(\boldsymbol{D}_t \boldsymbol{\eta}_{t-1}, \boldsymbol{\Lambda}_t\right). \label{eq:stateevolution}
 \end{align}
 Here,
 \[
@@ -140,30 +140,30 @@ with \(\mathbf{G}_t\) repeated once for the latent trend/seasonal block and once
 \[
 \boldsymbol{\Lambda}_t = \text{BlockDiag}\!\left(\mathbf{W}^{\theta}_t, \mathbf{W}^{\delta^1}_t, \ldots, \mathbf{W}^{\delta^J}_t, w_t^{\zeta}, \mathbf{W}^{\psi}_t\right).
 \]
-This formulation makes the main components explicit: a shared latent quantile process, source-specific discrepancy dynamics, and a transfer block driven by external covariates. The earlier observation-only and retrospective-only formulations are nested restrictions of \eqref{B5}--\eqref{B7}: suppressing the discrepancy states recovers the observation-only exDQLM, and restricting attention to \(t \leq T\) gives the retrospective-correction model.
+This formulation makes the main components explicit: a shared latent quantile process, source-specific discrepancy dynamics, and a transfer block driven by external covariates. The earlier observation-only and retrospective-only formulations are nested restrictions of \eqref{eq:usgsobs}--\eqref{eq:stateevolution}: suppressing the discrepancy states recovers the observation-only exDQLM, and restricting attention to \(t \leq T\) gives the retrospective-correction model.
 
 \subsection{Forecast-Window Extension}
-\label{subsec:ensemble}
+\label{subsec:forecastwindow}
 
-Ensemble forecast products are real-time predictive datasets generated from the information available at a forecast origin. Each ensemble member represents one plausible future trajectory, so after the cutoff the same state-space framework is continued forward by replacing the retrospective channels with forecast-product channels.
+After the cutoff, the same state-space framework is propagated forward by replacing the retrospective channels with forecast-product channels. Each ensemble member is treated as one source-specific future trajectory available at the forecast origin.
 
 Let \(K_{(j)}\) denote the horizon length of forecaster \(j\), ordered so that \(K_{(1)} \ge \cdots \ge K_{(J)}\). If forecaster \(j\) provides \(I_j\) ensemble members and \(y_T^{j,i}(k)\) denotes member \(i\) issued at time \(T\) for lead \(k\), then for \(t=T+k\) and each source \(j\) with \(k \le K_{(j)}\),
 \begin{align}
-    \text{Forecast products}:&& y_T^{j,i}(k) \mid \boldsymbol{\mu}_{T+k}, \sigma^j, \gamma^j &\sim \text{exAL}_{p_0}\!\left(\mathbf{e}_{T+k,j}' \boldsymbol{\mu}_{T+k}, \sigma^j, \gamma^j\right), \label{C1} \\
-    \text{Forecast-window states}:&& \boldsymbol{\mu}_{T+k} \mid \boldsymbol{\mu}_{T+k-1} &\sim \mathcal{N}\!\left(\boldsymbol{M}_{T+k} \boldsymbol{\mu}_{T+k-1}, \mathbf{W}_{T+k}\right), \label{C2} \\
+    \text{Forecast products}:&& y_T^{j,i}(k) \mid \boldsymbol{\eta}_{T+k}, \sigma^j, \gamma^j &\sim \text{exAL}_{p_0}\!\left(\mathbf{e}_{T+k,j}' \boldsymbol{\eta}_{T+k}, \sigma^j, \gamma^j\right), \label{eq:forecastobs} \\
+    \text{Forecast-window states}:&& \boldsymbol{\eta}_{T+k} \mid \boldsymbol{\eta}_{T+k-1} &\sim \mathcal{N}\!\left(\boldsymbol{M}_{T+k} \boldsymbol{\eta}_{T+k-1}, \mathbf{W}_{T+k}\right), \label{eq:forecaststate} \\
     \text{Stochastic covariance}:&& \mathbf{W}_{T+k} &\sim \text{InvWishart}(\nu_{T+k}, S_{T+k}).
 \end{align}
 The vector \(\mathbf{e}_{T+k,j}\) is the forecast-window analogue of \(\mathbf{h}_{t,j}\): it extracts the latent trend/seasonal block, the discrepancy block for source \(j\), and, when active, the transfer block. The matrix \(\boldsymbol{M}_{T+k}\) propagates the same components forward into the forecast window. In the full specification used by exAL-M-T1, the transfer states \((\zeta_t,\boldsymbol{\psi}_t)\) remain active and the forecast covariates available at the cutoff are propagated through the transition block. The reduced T0 variant is obtained by suppressing this forecast-window transfer block after the cutoff.
 
-For presentation, \eqref{B5}--\eqref{C2} define one model with time-dependent active observation channels. In implementation, we use reduced forecast-window vectors and matrices that retain only the forecasters with horizons still active at a given lead time. This reduced representation is computationally convenient, but it is algebraically equivalent to the single full framework presented here.
+Equations \eqref{eq:usgsobs}--\eqref{eq:forecaststate} define one state-space model with time-dependent observation channels. In implementation, the forecast-window vectors and matrices are reduced to the forecasters whose horizons remain active at a given lead time. This simplifies computation without changing the model.
 
 \subsection{Prior Specification and Discount Factors}
 \label{subsec:prioranddisc}
-Following \citet{barata2021_flex_quantile}, for each skewness parameter, we assign a truncated Student-t prior: \(\gamma^j \sim t_{(L, U)}(0, \phi^j, \nu^j)\), where $\phi^j$ and $\nu^j$ denote the scale and degrees of freedom hyperparameters, respectively, for \(1 \leq j \leq J\). For the scale parameters, we use inverse gamma priors: \(\sigma^j \sim IG(a_{\sigma^j}, b_{\sigma^j})\), with $a_{\sigma^j}$ and $b_{\sigma^j}$ as shape and scale hyperparameters. The initial state is specified as \(\boldsymbol{\theta}_0 \sim \mathcal{N}(\mathbf{m}_0, \mathbf{C}_0)\), with $\mathbf{m}_0$ and $\mathbf{C}_0$ as location and scale hyperparameters.
+Following \citet{barata2021_flex_quantile}, for each skewness parameter, we assign a truncated Student-t prior: \(\gamma^j \sim t_{(L, U)}(0, \phi^j, \nu^j)\), where $\phi^j$ and $\nu^j$ denote the scale and degrees of freedom hyperparameters, respectively, for \(1 \leq j \leq J\). For the scale parameters, we use inverse gamma priors: \(\sigma^j \sim IG(a_{\sigma^j}, b_{\sigma^j})\), with $a_{\sigma^j}$ and $b_{\sigma^j}$ as shape and scale hyperparameters. The latent trend-and-seasonal block is initialized as \(\boldsymbol{\theta}_0 \sim \mathcal{N}(\mathbf{m}_0, \mathbf{C}_0)\), with $\mathbf{m}_0$ and $\mathbf{C}_0$ as location and scale hyperparameters.
 
 Discount factors \citep{prado2021time} are used for adaptive evolution of the covariance matrices at the state level. Discount factors lie in the $(0,1]$ range, with 1 indicating no dynamic evolution and smaller values implying greater temporal adaptability. We use component discounting. The application-specific choices are given in Subsection~\ref{subsec:specification}. During the forecasting period ($t \in \{T+1, \ldots, T+K\}$), we set the Inverse Wishart prior parameters as $\mathbf{S}_t = (\nu_t - p_t - 1)\, c\, \mathbf{W}_T$ and $\nu_t = (p_t + 1 + \epsilon)$, with $\epsilon, c > 0$. Under this specification, the posterior mean is
 \(
-\mathbb{E}[\mathbf{W}_t \mid \mathcal{D}_t] = \frac{\epsilon}{1 + \epsilon}(c\, \mathbf{W}_T) + \frac{1}{1 + \epsilon} \mathbb{E}\left[ (\boldsymbol{\mu}_t - \mathbf{M}_t \boldsymbol{\mu}_{t-1}) (\boldsymbol{\mu}_t - \mathbf{M}_t \boldsymbol{\mu}_{t-1})' \mid \mathcal{D}_t \right],
+\mathbb{E}[\mathbf{W}_t \mid \mathcal{D}_t] = \frac{\epsilon}{1 + \epsilon}(c\, \mathbf{W}_T) + \frac{1}{1 + \epsilon} \mathbb{E}\left[ (\boldsymbol{\eta}_t - \mathbf{M}_t \boldsymbol{\eta}_{t-1}) (\boldsymbol{\eta}_t - \mathbf{M}_t \boldsymbol{\eta}_{t-1})' \mid \mathcal{D}_t \right],
 \)
 where $\mathcal{D}_t$ denotes all data available up to and including time $t$.
 
@@ -174,7 +174,7 @@ Further details regarding prior specification and discount factors are provided 
 \subsection{Posterior Inference}
 \label{subsec:postinf}
 The posterior distribution of all model parameters is explored using a Markov chain Monte Carlo (MCMC) algorithm.
-Algorithm~\ref{alg1} gives the pseudocode for the estimation-period formulation with retrospective products. The forecast-window extension uses the same conditional updates, with additional bookkeeping to handle the trans-dimensional state vector when forecast horizons differ across agencies. All full conditional posteriors are available in closed form except for the skewness parameters $\gamma^j$, $1 \leq j \leq J$. For these, we use a Metropolis--Hastings random walk on an unconstrained reparameterization. Posterior sampling of the state parameters relies on a modified Forward Filtering Backward Sampling (FFBS) algorithm that leverages their conditional normality (see Algorithm~\ref{alg:Alg2}).
+Algorithm~\ref{alg1} gives the core MCMC updates in a compact source-indexed notation. During the estimation period, the active source channels are the USGS observations and retrospective products; after the cutoff, the same updates use the active forecast-product channels, with additional bookkeeping to handle the trans-dimensional state vector when forecast horizons differ across agencies. All full conditional posteriors are available in closed form except for the skewness parameters $\gamma^j$, $1 \leq j \leq J$. For these, we use a Metropolis--Hastings random walk on an unconstrained reparameterization. Posterior sampling of the state parameters relies on a modified Forward Filtering Backward Sampling (FFBS) algorithm that leverages their conditional normality (see Algorithm~\ref{alg:Alg2}).
 
 %\subsubsection{Variational Bayes Implementation} \label{subsec:vb}
 
@@ -582,15 +582,16 @@ Figure~\ref{fig:synth2} provides a historical-only reference for the December 25
 \State  \(
 A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0), \text{ as defined in Section~\ref{subsec:exal}}
 \)
+\State For compactness, \(y_t^j\) denotes the active observation or product for source \(j\), and \(\mathbf{h}_{t,j}\) denotes the corresponding active selector vector: the retrospective selector during the estimation period and the forecast-window selector after the cutoff.
 \vspace{0.1cm}
 \hline
 \vspace{0.1cm}
 
 
 \State \textbf{Step 0: Set initial values} and sample size $N$.
-\State Initialize $\{ (v^j)^{(0)}_{1:T}$, $(s^j)^{(0)}_{1:T}$, $(\boldsymbol{\alpha})^{(0)}_{1:T}, $(\sigma^j)^{(0)}$, $(\gamma^j)^{(0)}\}_{j=0}^J$
+\State Initialize $\{ (v^j)^{(0)}_{1:T}$, $(s^j)^{(0)}_{1:T}$, $(\boldsymbol{\eta})^{(0)}_{1:T}, $(\sigma^j)^{(0)}$, $(\gamma^j)^{(0)}\}_{j=0}^J$
 \For{$n = 1$ to $N$}
-    \State \textbf{Step 1: Update $\boldsymbol{\alpha}_t$}
+    \State \textbf{Step 1: Update $\boldsymbol{\eta}_t$}
     \State Use Algorithm~\ref{alg:Alg2}
     \For{$j = 0$ to $J$}
         \State \textbf{Step 2: Update $v^j_t$}
@@ -598,27 +599,27 @@ A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0),
             \State Sample $(v^j_t)^{(n)} \sim \mathcal{GIG}(a^j_t, b^j_t, c^j_t)$
             \State $a^j_t = \frac{1}{2}$
             \State $b^j_t = \frac{1}{(\sigma^j)^{(n-1)}}\left[ \frac{((A^j)^2)^{(n-1)}}{(B^j)^{(n-1)}}+2\right]$
-            \State $c^j_t = \frac{1}{(\sigma^j)^{(n-1)} (B^j)^{(n-1)}}\left[y_t^j -\textbf{h}_{t,j+1}' \boldsymbol{\alpha}^{(n)}_t -(C^j)^{(n-1)} (\sigma^j)^{(n-1)} |(\gamma^j)^{(n-1)}| (s^j_t)^{(n-1)} \right]^2$
+            \State $c^j_t = \frac{1}{(\sigma^j)^{(n-1)} (B^j)^{(n-1)}}\left[y_t^j -\textbf{h}_{t,j}' \boldsymbol{\eta}^{(n)}_t -(C^j)^{(n-1)} (\sigma^j)^{(n-1)} |(\gamma^j)^{(n-1)}| (s^j_t)^{(n-1)} \right]^2$
         \EndFor
         \For{$t = T+1$ to $T+K_{(1)}$}
             \State Sample $(v^j_t)^{(n)} \sim \mathcal{GIG}(a^j_t, b^j_t, c^j_t)$
             \State $a^j_t = \frac{1}{2}$
             \State $b^j_t = \frac{1}{(\sigma^j)^{(n-1)}}\left[ \frac{((A^j)^2)^{(n-1)}}{(B^j)^{(n-1)}}+2\right]$
-            \State $c^j_t = \frac{1}{(\sigma^j)^{(n-1)} (B^j)^{(n-1)}}\left[y_t^j -\textbf{h}_{t,j+1}' \boldsymbol{\alpha}^{(n)}_t -(C^j)^{(n-1)} (\sigma^j)^{(n-1)} |(\gamma^j)^{(n-1)}| (s^j_t)^{(n-1)} \right]^2$
+            \State $c^j_t = \frac{1}{(\sigma^j)^{(n-1)} (B^j)^{(n-1)}}\left[y_t^j -\textbf{h}_{t,j}' \boldsymbol{\eta}^{(n)}_t -(C^j)^{(n-1)} (\sigma^j)^{(n-1)} |(\gamma^j)^{(n-1)}| (s^j_t)^{(n-1)} \right]^2$
         \EndFor
 
         \State \textbf{Step 3: Update $s^j_t$}
         \For{$t = 1$ to $T$}
             \State Sample $(s^j)^{(n)}_t \sim \mathcal{N}^+(m^j_t, \lambda^j_t)$
             \State $\lambda^j_t =  \left[\frac{\big((C^j)^{(n-1)}\gamma^{(n-1)} \big)^2(\sigma^j)^{(n-1)}}{(B^j)^{(n-1)}(v^j_t)^{(n)}}+1\right]$
-            \State $m^j_t =  \lambda^j_t \left[\frac{(C^j)^{(n-1)}|\gamma^{n-1}|(y_t^j -\textbf{h}_{t,j+1}' \boldsymbol{\alpha}^{(n)}_t - (A^j)^{(n-1)} (v^j_t)^{(n)})}{(B^j)^{(n-1)}(v^j_t)^{(n)}}\right]$
+            \State $m^j_t =  \lambda^j_t \left[\frac{(C^j)^{(n-1)}|\gamma^{n-1}|(y_t^j -\textbf{h}_{t,j}' \boldsymbol{\eta}^{(n)}_t - (A^j)^{(n-1)} (v^j_t)^{(n)})}{(B^j)^{(n-1)}(v^j_t)^{(n)}}\right]$
         \EndFor
 
         \State \textbf{Step 4: Update $\sigma^j$}
         \State Sample $(\sigma^j)^{(n)} \sim \mathcal{GIG}(a^j_t, b^j_t, c^j_t)$
         \State $a^j_t = -(1.5T + a_{\sigma^j})$
         \State $b^j_t = \sum_{t=1}^T \frac{1}{(B^j)^{(n-1)} (v^j_t)^{(n)}} \left((C^j)^{(n-1)} |(\gamma^j)^{(n-1)}| (s^j_t)^{(n)} \right)^2$
-        \State $c^j_t = \sum_{t=1}^T \frac{1}{(B^j)^{(n-1)} (v^j_t)^{(n)}}\big(y_t^j -\textbf{h}_{t,j+1}' \boldsymbol{\alpha}^{(n)}_t - (A^j)^{(n-1)} (v^j_t)^{(n)}\big)^2 + 2 \sum_{t=1}^T  (v^j_t)^{(n)} + 2 b_{\sigma^j}$
+        \State $c^j_t = \sum_{t=1}^T \frac{1}{(B^j)^{(n-1)} (v^j_t)^{(n)}}\big(y_t^j -\textbf{h}_{t,j}' \boldsymbol{\eta}^{(n)}_t - (A^j)^{(n-1)} (v^j_t)^{(n)}\big)^2 + 2 \sum_{t=1}^T  (v^j_t)^{(n)} + 2 b_{\sigma^j}$
 
         \State \textbf{Step 5: Update $\gamma^j$}
         \State Implement Metropolis-Hastings (MH)
@@ -634,7 +635,7 @@ A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0),
 \begin{algorithmic}
 
 \State \textbf{Notation:}
-\State  $\mathbf{H}_t$, $\mathbf{D}_t$ and $\boldsymbol{\Lambda}_t$ are as defined in Subsection~\ref{subsec:retrospective}
+\State  $\mathbf{H}_t = [\mathbf{h}_{t,0}, \mathbf{h}_{t,1}, \ldots, \mathbf{h}_{t,J}]$, $\mathbf{Y}_t = [y_t^o, z_t^1, \ldots, z_t^J]'$, and $\mathbf{D}_t, \boldsymbol{\Lambda}_t$ are as defined in Subsection~\ref{subsec:fullstatespace}
 \State $\mathbf{M}_t= \mathbf{C} \odot  \mathbf{\sigma} \odot | \mathbf{\gamma} | \odot \mathbf{s}_t + \mathbf{A} \odot \mathbf{v}_t$, \quad $\mathbf{O}_t= \sqrt{\mathbf{B} \odot \mathbf{v}_t} \odot Diag
 (\mathbf{\sigma}) \sqrt{\mathbf{B} \odot \mathbf{v}_t} \odot \mathbf{\sigma}$
 \State  \(
@@ -665,13 +666,13 @@ s^j_t  \big] , \quad \mathbf{\sigma} = \big[ \sigma^j  \big]
 \State \textbf{Step 2: Backward Sampling}
 \For{$t = T$ down to $0$}
     \If{$t = T$}
-        \State Sample $\boldsymbol{\theta}_T | D_T \sim \mathcal{N}(\mathbf{m}_T, \mathbf{C}_T)$
+        \State Sample $\boldsymbol{\eta}_T | D_T \sim \mathcal{N}(\mathbf{m}_T, \mathbf{C}_T)$
     \Else
         \State Compute Retrospective moments:
-        \State $\mathbf{m}_t^s = \mathbf{m}_t + \mathbf{C}_t \mathbf{G}_{t+1}' \mathbf{R}_{t+1}^{-1} (\boldsymbol{\theta}_{t+1} - \mathbf{a}_{t+1})$
-        \State $\mathbf{C}_t^s = \mathbf{C}_t - \mathbf{C}_t \mathbf{G}_{t+1}' \mathbf{R}_{t+1}^{-1} \mathbf{D}_{t+1} \mathbf{C}_t$
+        \State $\mathbf{m}_t^s = \mathbf{m}_t + \mathbf{C}_t \mathbf{D}_{t+1}' \mathbf{R}_{t+1}^{-1} (\boldsymbol{\eta}_{t+1} - \mathbf{a}_{t+1})$
+        \State $\mathbf{C}_t^s = \mathbf{C}_t - \mathbf{C}_t \mathbf{D}_{t+1}' \mathbf{R}_{t+1}^{-1} \mathbf{D}_{t+1} \mathbf{C}_t$
         
-        \State Sample $\boldsymbol{\theta}_t | D_T \sim \mathcal{N}(\mathbf{m}_t^s, \mathbf{C}_t^s)$
+        \State Sample $\boldsymbol{\eta}_t | D_T \sim \mathcal{N}(\mathbf{m}_t^s, \mathbf{C}_t^s)$
     \EndIf
 \EndFor
 
@@ -700,7 +701,7 @@ A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0),
 \State \textbf{Step 0: Set initial values}
 
 \While{$\text{ELBO}_k > \text{tol}$}
-    \State \textbf{Step 1: Update $r(\boldsymbol{\alpha}_t)=\mathcal{N}(m^{(k)}_t,C^{(k)}_t)$}
+    \State \textbf{Step 1: Update $r(\boldsymbol{\eta}_t)=\mathcal{N}(m^{(k)}_t,C^{(k)}_t)$}
     \State Use Algorithm~\ref{alg:Alg4}
 
     \For{$j = 0$ to $J$}
@@ -708,15 +709,15 @@ A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0),
         \For{$t = 1$ to $T$}
             \State $a_t^{j,(k)} = \frac{1}{2}$
             \State $b_t^{j,(k)} = \left\langle \frac{A^2}{\sigma^j B^j} \right\rangle^{(k-1)} + 2 \left\langle \frac{1}{\sigma^j} \right\rangle^{(k-1)}$
-            \State $c_t^{j,(k)} = \left\langle \frac{1}{\sigma^j B^j} \right\rangle^{(k-1)} \Big[ (y_t^j)^2 - 2y_t^j \left\langle  \mathbf{h}_{t,j+1} \boldsymbol{\alpha}_t \right\rangle^{(k)} + \left\langle (  \mathbf{h}_{t,j+1} \boldsymbol{\alpha}_t )^2 \right\rangle^{(k)} \Big]$
-            \State $\quad \quad -2 \left\langle s^j_t \right\rangle^{(k-1)} \left\langle \frac{C^j|\gamma^j|}{B^j} \right\rangle^{(k-1)} \Big[ y_t^j - \left\langle  \mathbf{h}_{t,j+1} \boldsymbol{\alpha}_t \right\rangle^{(k)} \Big]$
+            \State $c_t^{j,(k)} = \left\langle \frac{1}{\sigma^j B^j} \right\rangle^{(k-1)} \Big[ (y_t^j)^2 - 2y_t^j \left\langle  \mathbf{h}_{t,j} \boldsymbol{\eta}_t \right\rangle^{(k)} + \left\langle (  \mathbf{h}_{t,j} \boldsymbol{\eta}_t )^2 \right\rangle^{(k)} \Big]$
+            \State $\quad \quad -2 \left\langle s^j_t \right\rangle^{(k-1)} \left\langle \frac{C^j|\gamma^j|}{B^j} \right\rangle^{(k-1)} \Big[ y_t^j - \left\langle  \mathbf{h}_{t,j} \boldsymbol{\eta}_t \right\rangle^{(k)} \Big]$
             \State $\quad \quad + \left\langle (s^j_t)^2 \right\rangle^{(k-1)} \left\langle \frac{(C^j)^2\sigma^j|\gamma^j|^2}{B^j} \right\rangle^{(k-1)}$
         \EndFor
 
         \State \textbf{Step 3: Update $r(s^j_t)=\mathcal{N}^+(\eta^{j,(k)},\lambda^{j,(k)})$}
         \For{$t = 1$ to $T$}
             \State $\lambda^{j,(k)} = \Big[ 1+\left\langle \frac{(C^j)^2 \sigma^j |(\gamma^j)|^2}{B^j} \right\rangle^{(k-1)} \left\langle \frac{1}{v^j_t} \right\rangle^{(k)} \Big]^{-1}$
-            \State $\eta^{j,(k)} = \lambda^{j,(k)}  \Big[ \left\langle \frac{C^j |\gamma^j|}{B^j} \right\rangle^{(k-1)} \left\langle \frac{1}{v^j_t} \right\rangle^{(k)} \Big( y_t^j - \left\langle  \mathbf{h}_{t,j+1} \boldsymbol{\alpha}_t \right\rangle^{(k)} \Big) - \left\langle \frac{C^j |\gamma^j| A^j}{B^j} \right\rangle^{(k-1)} \Big]$
+            \State $\eta^{j,(k)} = \lambda^{j,(k)}  \Big[ \left\langle \frac{C^j |\gamma^j|}{B^j} \right\rangle^{(k-1)} \left\langle \frac{1}{v^j_t} \right\rangle^{(k)} \Big( y_t^j - \left\langle  \mathbf{h}_{t,j} \boldsymbol{\eta}_t \right\rangle^{(k)} \Big) - \left\langle \frac{C^j |\gamma^j| A^j}{B^j} \right\rangle^{(k-1)} \Big]$
         \EndFor
 
         \State \textbf{Step 4: Update $r(\gamma^j, \sigma^j )$}
@@ -734,7 +735,7 @@ A^j = A(\gamma^j;p_0), \quad B^j = B(\gamma^j;p_0), \quad C^j = C(\gamma^j;p_0),
 
 \State \textbf{Notation:}
 \State $\left\langle g(\xi) \right\rangle = \mathbb{E}_\xi\left[ g(\xi) \right]$
-\State  $\mathbf{H}_t$, $\mathbf{D}_t$ and $\boldsymbol{\Lambda}_t$ are as defined in Subsection~\ref{subsec:retrospective}
+\State  $\mathbf{H}_t = [\mathbf{h}_{t,0}, \mathbf{h}_{t,1}, \ldots, \mathbf{h}_{t,J}]$, $\mathbf{Y}_t = [y_t^o, z_t^1, \ldots, z_t^J]'$, and $\mathbf{D}_t, \boldsymbol{\Lambda}_t$ are as defined in Subsection~\ref{subsec:fullstatespace}
 \State $\mathbf{M}_t= \mathbf{C} \odot  \mathbf{\sigma} \odot | \mathbf{\gamma} | \odot \mathbf{s}_t + \mathbf{A} \odot \mathbf{v}_t$, \quad $\mathbf{O}_t= \sqrt{\mathbf{B} \odot \mathbf{v}_t} \odot Diag
 (\mathbf{\sigma}) \sqrt{\mathbf{B} \odot \mathbf{v}_t} \odot \mathbf{\sigma}$
 \State  \(
@@ -765,13 +766,13 @@ s^j_t  \right\rangle \big] , \quad \mathbf{\sigma} = \big[ \left\langle \sigma^j
 \State \textbf{Step 2: Backward Smoothing}
 \For{$t = T$ down to $1$}
     \If{$t = T$}
-        \State Set $r^{(k+1)}(\boldsymbol{\theta}_T) := \mathcal{N}(\mathbf{m}_T^s, \mathbf{C}_T^s)$
+        \State Set $r^{(k+1)}(\boldsymbol{\eta}_T) := \mathcal{N}(\mathbf{m}_T^s, \mathbf{C}_T^s)$
         \State $\mathbf{m}_T^s = \mathbf{m}_T$
         \State $\mathbf{C}_T^s = \mathbf{C}_T$
     \Else
         \State Compute Smoothing moments:
-        \State $r^{(k+1)}(\boldsymbol{\theta}_t) := \mathcal{N}(\mathbf{m}_t^s, \mathbf{C}_t^s)$
-        \State $B_t = \mathbf{C}_t \mathbf{D}_{t+1}' \mathbf{R}_{t+1}^{-1}$
+        \State $r^{(k+1)}(\boldsymbol{\eta}_t) := \mathcal{N}(\mathbf{m}_t^s, \mathbf{C}_t^s)$
+        \State $\mathbf{B}_t = \mathbf{C}_t \mathbf{D}_{t+1}' \mathbf{R}_{t+1}^{-1}$
         \State $\mathbf{m}_t^s = \mathbf{m}_t + \mathbf{B}_t (\mathbf{m}_{t+1}^s - \mathbf{a}_{t+1})$
         \State $\mathbf{C}_t^s = \mathbf{C}_t + \mathbf{B}_t (\mathbf{C}_{t+1}^s - \mathbf{R}_{t+1}) \mathbf{B}_t'$
     \EndIf

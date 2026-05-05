@@ -740,6 +740,7 @@ Use this as the working order when actually editing the manuscript.
 - [x] `General Results` renamed/replaced
 - [x] methods reframed around one unified framework
 - [x] full state-space model presented directly, with simpler formulations treated as restrictions rather than separate models
+- [x] single-model notation rechecked for first-time readability; equation labels and appendix algorithms aligned with the unified state notation
 
 ### Fourth pass: forecasting protocol and validation
 - [x] latest-forecast-only protocol in text
