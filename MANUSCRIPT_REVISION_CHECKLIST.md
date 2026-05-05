@@ -646,17 +646,17 @@ Goal: align the manuscript with the revised final forecasting protocol.
 ### Phase F. Forecast validation/results overhaul
 Goal: this is the main substantive rewrite.
 
-- [ ] Replace the old single-window forecasting emphasis with the five-cutoff validation design.
+- [x] Replace the old single-window forecasting emphasis with the five-cutoff validation design.
   - Source: `HE-2`, `R1-M4`
 
-- [ ] Insert the final benchmark table and text consistent with the rebuttal.
+- [x] Insert the final benchmark table and text consistent with the rebuttal.
   - Source: `HE-2`
   - Current manuscript already has an updated table at `360-383`, but the surrounding framing should be rechecked against the final rebuttal wording.
 
-- [ ] Ensure the text states correctly that `exAL-M-T1` is best in all five cutoffs.
+- [x] Ensure the text states correctly that `exAL-M-T1` is best in all five cutoffs.
   - Source: `HE-2`, `HE-7`
 
-- [ ] Keep the comparison against simpler Bayesian alternatives and raw forecast products visible and easy to interpret.
+- [x] Keep the comparison against simpler Bayesian alternatives and raw forecast products visible and easy to interpret.
   - Source: `HE-2`
 
 - [ ] Decide whether the ablation study will appear in the supplement or appendix rather than in the main article.
@@ -741,7 +741,7 @@ Use this as the working order when actually editing the manuscript.
 - [x] latest-forecast-only protocol in text
 - [x] five-cutoff rolling-origin design stated clearly
 - [x] fit-time vs forecast-time vs verification distinction stated clearly
-- [ ] benchmark comparison fully aligned with rebuttal
+- [x] benchmark comparison fully aligned with rebuttal
 - [ ] supplement/appended placement for ablation and quantile diagnostics finalized
 
 ### Fifth pass: harder review-dependent items
