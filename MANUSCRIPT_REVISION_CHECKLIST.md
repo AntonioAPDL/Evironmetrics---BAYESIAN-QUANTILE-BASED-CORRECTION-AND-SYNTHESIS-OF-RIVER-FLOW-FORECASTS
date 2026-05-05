@@ -336,15 +336,15 @@ Goal: reduce obvious overlength before structural rewrites.
 ### Phase C. Introduction rewrite
 Goal: fix the motivation before touching results structure.
 
-- [ ] Separate meteorological uncertainty from hydrological uncertainty early in the introduction.
+- [x] Separate meteorological uncertainty from hydrological uncertainty early in the introduction.
   - Source: `R1-M1`
   - Current location: `58-76`
 
-- [ ] Shorten the ensemble-generation discussion so it supports the paper’s actual scope rather than becoming a parallel weather-forecasting introduction.
+- [x] Shorten the ensemble-generation discussion so it supports the paper’s actual scope rather than becoming a parallel weather-forecasting introduction.
   - Source: `R1-M1`
   - Current location: `62-66`
 
-- [ ] Reframe the contribution more clearly around:
+- [x] Reframe the contribution more clearly around:
   - Bayesian quantile-based correction-and-synthesis
   - forecasting performance in this application
   rather than generic `dynamical error correction`.
@@ -499,7 +499,7 @@ Use this as the working order when actually editing the manuscript.
 - [x] quantile-crossing correction reduced
 
 ### Third pass: introduction and section architecture
-- [ ] introduction rewritten
+- [x] introduction rewritten
 - [ ] section architecture decided
 - [ ] data/application ordering rewritten
 - [ ] `General Results` renamed/replaced
